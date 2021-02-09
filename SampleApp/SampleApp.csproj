@@ -6,6 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Collections\Collections.csproj" />
     <ProjectReference Include="..\SampleApp.Logic\SampleApp.Logic.csproj" />
   </ItemGroup>
 

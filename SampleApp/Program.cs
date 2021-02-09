@@ -1,19 +1,21 @@
 ﻿using System;
+
+using System.Collections;
+using System.Collections.Generic;
+using Collections;
 using SampleApp.Logic;
 
 namespace SampleApp
 {
     class Program
     {
-        static void Main(string[] args)
+        private static void Main(string[] args)
         {
-            ICounter counter = new Counter();
+            List<int> list = new List<int>();
 
-            int[] numbers = counter.GetNumbers();
-
-            for(int i = 0; i < numbers.Length; i++)
+            foreach (int value in list)
             {
-                Console.WriteLine(numbers[i]);
+                Console.WriteLine(value);
             }
         }
     }
