@@ -9,16 +9,16 @@ namespace FunctionReferences
     {
         static void Main(string[] args)
         {
-            var numbers = new [] { 1, 2, 3, 4, 5 };
+            var ages = new [] { 20, 18, 15, 13, 25, 21, 54 };
+            
+            var adults = ages
+                .Where(a => a > 18)
+                .OrderBy(a => a)
+                .Foreach(a => Console.WriteLine(a));
 
-
-            var checkedNumbers = numbers
-                .Foreach(Console.WriteLine)
-                .OurWhere(number => number > 3);
-
-            foreach (int number in checkedNumbers)
+            foreach (int age in adults)
             {
-                Console.WriteLine(number);
+                Console.WriteLine(age);
             }
         }
 
