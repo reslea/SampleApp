@@ -8,9 +8,11 @@ namespace SampleApp
     {
         public static IEnumerable<T> Foreach<T>(this IEnumerable<T> collection, Action<T> action)
         {
+            // if(action == null) throw new ArgumentNullException();
+
             foreach (var item in collection)
             {
-                action(item);
+                action?.Invoke(item);
                 yield return item;
             }
         }

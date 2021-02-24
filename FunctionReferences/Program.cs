@@ -14,7 +14,7 @@ namespace FunctionReferences
             var adults = ages
                 .Where(a => a > 18)
                 .OrderBy(a => a)
-                .Foreach(a => Console.WriteLine(a));
+                .Foreach(Console.WriteLine);
 
             foreach (int age in adults)
             {
