@@ -26,5 +26,15 @@ namespace SampleApp
         {
             return $"{Name} from {Address} has Age: {Age}";
         }
+
+        public override bool Equals(object? obj)
+        {
+            if (obj is Person person)
+            {
+                return Name == person.Name
+                       && Age == person.Age;
+            }
+            return false;
+        }
     }
 }
