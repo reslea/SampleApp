@@ -15,6 +15,8 @@ namespace SampleApp
     {
         private static void Main(string[] args)
         {
+            // merge test
+
             var difference = DateTime.Now - DateTime.Today;
             Console.WriteLine(difference);
             
