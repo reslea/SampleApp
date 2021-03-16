@@ -10,24 +10,9 @@ namespace Streams
     {
         static void Main(string[] args)
         {
-            using var fileStream = new FileStream("myFile0.csv", FileMode.Open);
-            using var textReader = new StreamReader(fileStream, Encoding.UTF8);
-            
-            if (!textReader.EndOfStream)
-            {
-                var header = textReader.ReadLine();
-            }
+            using var deserializer = new Deserializer("myFile0.csv");
 
-            var allPeopleText = textReader.ReadToEnd();
-            var allPeopleLines = allPeopleText.Split("\r\n");
-            var allPeopleProperties = allPeopleLines.Select(l => l.Split(','));
-            var people = allPeopleProperties
-                .Select(properties => new Person
-            {
-                Id = int.Parse(properties[0]),
-                FirstName = properties[1],
-                LastName = properties[2]
-            });
+            var people = deserializer.DeserializeCsv();
         }
 
         private static IEnumerable<Person> ReadPeopleFromFile(StreamReader textReader)
@@ -72,12 +57,5 @@ namespace Streams
                 ((IDisposable)fileStream).Dispose();
             }
         }
-    }
-
-    public class Person
-    {
-        public int Id { get; set; }
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
     }
 }
