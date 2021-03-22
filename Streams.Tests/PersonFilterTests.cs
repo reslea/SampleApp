@@ -29,6 +29,9 @@ namespace Streams.Tests
             var personFilter = new PersonFilter(_deserializer.Object);
             var adults = personFilter.GetAdults();
 
+            _deserializer.Verify(d => d.DeserializeCsv(),
+                Times.Once);
+
             Assert.Contains(adult, adults);
             Assert.DoesNotContain(notAdult, adults);
         }
