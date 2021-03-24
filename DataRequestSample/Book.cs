@@ -3,7 +3,7 @@ using System.Dynamic;
 
 namespace DataRequestSample
 {
-    public class Book
+    public class Book : BaseEntity
     {
         public int Id { get; set; }
 

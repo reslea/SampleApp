@@ -2,43 +2,54 @@
 using System.Collections.Generic;
 using System.Data.Common;
 using System.Data.SqlClient;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace DataRequestSample
 {
     class Program
     {
-        static void Main(string[] args)
+        static async Task Main(string[] args)
         {
             var connectionString = @"Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=Library;Integrated Security=True;";
 
             using var connection = new SqlConnection(connectionString);
-            connection.Open();
+            await connection.OpenAsync();
 
-            var command = new SqlCommand("SELECT * FROM Books", connection);
+            #region SELECT
+            // SELECT
+            //await RawQueriesExample.GetBooksQueryAsync(connection);
+            #endregion
 
-            using var reader = command.ExecuteReader();
+            #region INSERT
+            // INSERT
+            //var book = new Book
+            //{
+            //    Title = "Гарри Поттер и Кубок Огня",
+            //    Author = "Дж. Роулинг",
+            //    PagesCount = 600,
+            //    PublishDate = new DateTime(2004, 10, 11)
+            //};
 
-            var books = GetBooks(reader);
+            //await RawQueriesExample.InsertBookAsync(book, connection);
+            #endregion
+
+            #region SCHEMA
+            //await RawQueriesExample.SelectViaSchema(connection);
+            #endregion
+
+            using var bookQuery = new Repository<Book>(connection);
+
+            var books = await bookQuery.GetAll();
 
             foreach (var book in books)
             {
-                Console.WriteLine($"{book.Id} {book.Author} {book.PagesCount}");
+                Console.WriteLine($"{book.Id} {book.Title} {book.Author} {book.PagesCount} {book.PublishDate}");
             }
+
+            IRepository<Book> bookRepo;
         }
 
-        public static IEnumerable<Book> GetBooks(SqlDataReader reader)
-        {
-            while (reader.Read())
-            {
-                yield return new Book
-                {
-                    Id = (int)reader[0],
-                    Title = (string)reader[1],
-                    Author = (string)reader[2],
-                    PagesCount = (int)reader[3],
-                    PublishDate = (DateTime)reader[4]
-                };
-            }
-        }
+
     }
 }
