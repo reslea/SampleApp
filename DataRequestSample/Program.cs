@@ -38,16 +38,13 @@ namespace DataRequestSample
             //await RawQueriesExample.SelectViaSchema(connection);
             #endregion
 
-            using var bookQuery = new Repository<Book>(connection);
+            //using var bookRepository = new Repository<Book>(connection);
 
-            var books = await bookQuery.GetAll();
 
-            foreach (var book in books)
-            {
-                Console.WriteLine($"{book.Id} {book.Title} {book.Author} {book.PagesCount} {book.PublishDate}");
-            }
-
-            IRepository<Book> bookRepo;
+            //foreach (var book in books)
+            //{
+            //    Console.WriteLine($"{book.Id} {book.Title} {book.Author} {book.PagesCount} {book.PublishDate}");
+            //}
         }
 
 
