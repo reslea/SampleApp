@@ -47,7 +47,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DapperClone.UI", "DapperClo
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DapperClone", "DapperClone\DapperClone.csproj", "{23E64F80-47EF-4FAB-AED9-1DE070D85621}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Disconnected", "Disconnected\Disconnected.csproj", "{4A1962CC-38DE-42F7-815A-946646735206}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Disconnected", "Disconnected\Disconnected.csproj", "{4A1962CC-38DE-42F7-815A-946646735206}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataRelations", "DataRelations\DataRelations.csproj", "{CD4D7A62-BD3D-4001-B0AA-AE0ED0FCE6F9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -135,6 +137,10 @@ Global
 		{4A1962CC-38DE-42F7-815A-946646735206}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4A1962CC-38DE-42F7-815A-946646735206}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4A1962CC-38DE-42F7-815A-946646735206}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CD4D7A62-BD3D-4001-B0AA-AE0ED0FCE6F9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CD4D7A62-BD3D-4001-B0AA-AE0ED0FCE6F9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CD4D7A62-BD3D-4001-B0AA-AE0ED0FCE6F9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CD4D7A62-BD3D-4001-B0AA-AE0ED0FCE6F9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -161,6 +167,7 @@ Global
 		{8003EB1D-CB7F-40DD-9321-556B1A25E0D2} = {E2B1BD42-552E-47E6-83C7-ECFDC9BD5939}
 		{23E64F80-47EF-4FAB-AED9-1DE070D85621} = {E2B1BD42-552E-47E6-83C7-ECFDC9BD5939}
 		{4A1962CC-38DE-42F7-815A-946646735206} = {E2B1BD42-552E-47E6-83C7-ECFDC9BD5939}
+		{CD4D7A62-BD3D-4001-B0AA-AE0ED0FCE6F9} = {E2B1BD42-552E-47E6-83C7-ECFDC9BD5939}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {366F6785-1605-47EC-80C7-072BBBB277DD}
