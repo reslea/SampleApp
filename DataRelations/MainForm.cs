@@ -7,18 +7,19 @@ using System.Data.SqlClient;
 using System.Drawing;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace DataRelations
 {
-    public partial class MainForm : Form
+    public partial class MainForm : Form, IDisposable
     {
         private SqlDataAdapter booksDataAdapter;
         private DataSet dataset;
         private DataTable booksTable;
         private DataTable bookPricesTable;
-        private SqlDataAdapter bookPricesDataAdapter;
+        private SqlConnection _connection;
 
         public MainForm()
         {
@@ -36,16 +37,15 @@ namespace DataRelations
         private void InitializeDataAdapter()
         {
             var connectionString = ConfigurationManager.ConnectionStrings["LibraryDb"].ConnectionString;
-            using (var connection = new SqlConnection(connectionString))
-            {
-                booksDataAdapter = new SqlDataAdapter("SELECT * FROM Books;", connection);
-                bookPricesDataAdapter = new SqlDataAdapter("SELECT * FROM BookPrices;", connection);
+            _connection = new SqlConnection(connectionString);
+            
+            booksDataAdapter = new SqlDataAdapter("SELECT * FROM Books; SELECT * FROM BookPrices;", _connection);
+            booksDataAdapter.TableMappings.Add("Table", "Books");
+            booksDataAdapter.TableMappings.Add("Table1", "BookPrices");
+            
+            var commandBuilder = new SqlCommandBuilder(booksDataAdapter);
 
-                booksDataAdapter.Fill(booksTable);
-                bookPricesDataAdapter.Fill(bookPricesTable);
-
-                booksDataAdapter.Update(dataset);
-            }
+            booksDataAdapter.Fill(dataset);
         }
 
         private void FillBookPricesTable()
@@ -65,7 +65,7 @@ namespace DataRelations
                 }
             }
         }
-
+        
         private void FillBookPrices(SqlDataReader reader, DataTable dataTable)
         {
             var row = dataTable.NewRow();
@@ -97,7 +97,7 @@ namespace DataRelations
             //bookPrices.Columns.Add(new DataColumn(nameof(BookPrice.BookId), typeof(int)) { AllowDBNull = false });
             //bookPrices.Columns.Add(new DataColumn(nameof(BookPrice.Price), typeof(decimal)) { AllowDBNull = false });
 
-            //dataset.Relations.Add(books.Columns["Id"], bookPrices.Columns["BookId"]);
+            dataset.Relations.Add(books.Columns["Id"], bookPrices.Columns["BookId"]);
 
             booksTable = books;
             bookPricesTable = bookPrices;
@@ -139,6 +139,23 @@ namespace DataRelations
         private void DebugButton_Click(object sender, EventArgs e)
         {
 
+        }
+
+        private async void FreezeButton_Click(object sender, EventArgs e)
+        {            
+            await Task.Delay(TimeSpan.FromSeconds(3));
+            IsCompletedLabel.Text = $"Completed on {Thread.CurrentThread.ManagedThreadId}";
+        }
+
+        private void SaveChangesButton_Click(object sender, EventArgs e)
+        {
+            booksDataAdapter.Update(dataset);
+        }
+
+        public new void Dispose()
+        {
+            _connection?.Dispose();
+            base.Dispose();
         }
     }
 }
