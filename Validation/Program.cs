@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Reflection;
@@ -9,27 +10,31 @@ namespace Validation
     {
         static void Main(string[] args)
         {
-            var person = new Person { Email = "1"};
+            var person = new Person { };
 
             var type = person.GetType();
 
-            foreach (var property in type.GetProperties())
-            {
-                var attributes = property.CustomAttributes;
+            //foreach (var property in type.GetProperties())
+            //{
+            //    var attributes = property.CustomAttributes;
 
-                foreach (var attribute in attributes)
-                {
-                    var attributeType = attribute.AttributeType;
-                    var attributeInstance = Activator.CreateInstance(attributeType);
+            //    foreach (var attribute in attributes)
+            //    {
+            //        var attributeType = attribute.AttributeType;
+            //        var attributeInstance = Activator.CreateInstance(attributeType);
 
-                    if (attributeInstance is ValidationAttribute validationAttribute)
-                    {
-                        var validationResult = validationAttribute.IsValid(property.GetValue(person));
+            //        if (attributeInstance is ValidationAttribute validationAttribute)
+            //        {
+            //            var validationResult = validationAttribute.IsValid(property.GetValue(person));
 
-                        Console.WriteLine($"{property.Name}[{attribute}]:{validationResult}");
-                    }
-                }
-            }
+            //            Console.WriteLine($"{property.Name}[{attribute}]:{validationResult}");
+            //        }
+            //    }
+            //}
+
+            var validationResults = new List<ValidationResult>();
+            var validationContext = new ValidationContext(person);
+            var isValid = Validator.TryValidateObject(person, validationContext, validationResults);
         }
     }
 
