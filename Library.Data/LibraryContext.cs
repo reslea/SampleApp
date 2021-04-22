@@ -1,5 +1,8 @@
 ﻿using System;
-using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Runtime.InteropServices.ComTypes;
+using Library.Data.Entity;
+using Library.Data.EntityConfiguration;
 using Microsoft.EntityFrameworkCore;
 
 namespace Library.Data
@@ -16,32 +19,15 @@ namespace Library.Data
             optionsBuilder.UseSqlServer(connectionString);
             base.OnConfiguring(optionsBuilder);
         }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            //modelBuilder.ApplyConfiguration(new BookConfiguration());
+            //modelBuilder.ApplyConfiguration(new BookPriceConfiguration());
+            modelBuilder.ApplyConfigurationsFromAssembly(GetType().Assembly);
+            
+            base.OnModelCreating(modelBuilder);
+        }
     }
 
-    public class BookPrice
-    {
-        public int Id { get; set; }
-        
-        [Required]
-        public Book Book { get; set; }
-
-        //public int BookId { get; set; }
-
-        public decimal Price { get; set; }
-    }
-
-    public class Book
-    {
-        public int Id { get; set; }
-
-        [Required, StringLength(255)]
-        public string Title { get; set; }
-        
-        [Required, StringLength(255)]
-        public string Author { get; set; }
-
-        public int PagesCount { get; set; }
-
-        public DateTime PublishDate { get; set; }
-    }
 }
