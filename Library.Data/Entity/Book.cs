@@ -3,10 +3,8 @@
 namespace Library.Data.Entity
 {
     //[Table("Prices")]
-    public class Book
+    public class Book : BaseEntity
     {
-        public int Id { get; set; }
-
         //[Required, StringLength(255)]
         public string Title { get; set; }
         

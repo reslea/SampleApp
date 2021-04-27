@@ -1,10 +1,7 @@
 ﻿namespace Library.Data.Entity
 {
-    public class BookPrice
+    public class BookPrice : BaseEntity
     {
-        //[Key]
-        public int Id { get; set; }
-        
         //[Required]
         public Book Book { get; set; }
 
