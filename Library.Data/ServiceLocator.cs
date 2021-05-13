@@ -13,9 +13,6 @@ namespace Library.Data
 
         public ServiceLocator()
         {
-            _servicesToResolve.Add();
-
-
             _services.Add(typeof(LibraryContext), new LibraryContext());
 
             _services.Add(typeof(IBookRepository), new BookRepository(Get<LibraryContext>()));
