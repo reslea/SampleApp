@@ -1,0 +1,33 @@
+﻿@model List<BookModel>
+
+@{
+    ViewBag.Title = "title";
+    Layout = "_Layout";
+}
+
+<table class="table table-striped">
+    <thead>
+    <tr>
+        <th scope="col">Id</th>
+        <th scope="col">Title</th>
+        <th scope="col">Author</th>
+        <th scope="col">Pages Count</th>
+        <th scope="col">Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+        @foreach (var book in Model)
+        {
+            <tr scope="row">
+                <th>@book.Id</th>
+                <td>@book.Title</td>
+                <td>@book.Author</td>
+                <td>@book.PagesCount</td>
+                <td>
+                    @Html.ActionLink("Edit", "Update", book)
+                    | <a asp-action="Delete" asp-route-id="@book.Id">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

@@ -35,5 +35,10 @@ namespace SampleAPI.Data.Repositories
         {
             _set.Remove(user);
         }
+
+        public void Update(User user)
+        {
+            _set.Update(user);
+        }
     }
 }

@@ -6,16 +6,14 @@ using System.Threading.Tasks;
 
 namespace SampleApi.Web.Models
 {
-    public class UserModel
+    public class UserReadModel
     {
         public int Id { get; set; }
         
-        [Required]
         public string Username { get; set; }
 
         public string FullName { get; set; }
 
-        [Required, EmailAddress]
         public string Email { get; set; }
     }
 }

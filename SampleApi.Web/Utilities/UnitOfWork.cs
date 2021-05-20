@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore.Storage;
 using SampleAPI.Data;
 
 namespace SampleApi.Web.Utilities
@@ -19,9 +21,30 @@ namespace SampleApi.Web.Utilities
         {
             _context.SaveChanges();
         }
+
+        public async Task SaveChangesAsync()
+        {
+            await _context.SaveChangesAsync();
+        }
+
+        public IDbContextTransaction BeginTransaction()
+        {
+            return _context.Database.BeginTransaction();
+        }
+
+        public async Task<IDbContextTransaction> BeginTransactionAsync()
+        {
+            return await _context.Database.BeginTransactionAsync();
+        }
     }
     public interface IUnitOfWork
     {
         void SaveChanges();
+
+        Task SaveChangesAsync();
+
+        IDbContextTransaction BeginTransaction();
+
+        Task<IDbContextTransaction> BeginTransactionAsync();
     }
 }

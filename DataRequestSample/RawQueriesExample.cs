@@ -28,6 +28,8 @@ namespace DataRequestSample
 
         public static async Task InsertBookAsync(Book book, SqlConnection connection)
         {
+            await using var transaction = await connection.BeginTransactionAsync();
+
             var insertCommand = "INSERT INTO Books (Title, Author, PagesCount, PublishDate) VALUES " +
                                 "(@title, @author, @pagesCount, @PublishDate)";
             var command = new SqlCommand(insertCommand, connection);
@@ -37,6 +39,8 @@ namespace DataRequestSample
             command.Parameters.AddWithValue("@PublishDate", book.PublishDate);
 
             await command.ExecuteNonQueryAsync();
+
+            await transaction.CommitAsync();
         }
 
         public static async Task GetBooksQueryAsync(SqlConnection connection)

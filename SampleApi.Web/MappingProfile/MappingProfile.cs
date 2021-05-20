@@ -8,10 +8,12 @@ namespace SampleApi.Web.MappingProfile
     {
         public MappingProfile()
         {
-            CreateMap<User, UserModel>()
-                .ForMember(model => model.Username,
+            CreateMap<User, UserReadModel>()
+                .ForMember(model => model.FullName,
                     options => options.MapFrom(
                         user => $"{user.LastName} {user.FirstName}"));
+
+            CreateMap<UserWriteModel, User>();
         }
     }
 }
