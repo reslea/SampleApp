@@ -16,7 +16,7 @@ namespace SampleMvc.Data.EntityConfiguration
 
             builder.Property(_ => _.Author).IsRequired().HasMaxLength(255);
 
-            builder.Property(_ => _.Genre).IsRequired().HasMaxLength(255);
+            //builder.Property(_ => _.Genre).IsRequired().HasMaxLength(255);
 
             builder.Property(_ => _.Title).IsRequired().HasMaxLength(255);
         }

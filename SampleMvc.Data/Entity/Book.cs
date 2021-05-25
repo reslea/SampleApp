@@ -11,7 +11,7 @@ namespace SampleMvc.Data.Entity
         //[Required, StringLength(255)]
         public string Author { get; set; }
 
-        public string Genre { get; set; }
+        public Genre Genre { get; set; }
 
         public int PagesCount { get; set; }
 
