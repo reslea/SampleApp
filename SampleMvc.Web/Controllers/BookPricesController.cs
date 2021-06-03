@@ -22,7 +22,7 @@ namespace SampleMvc.Web.Controllers
         // GET: BookPrices
         public async Task<IActionResult> Index()
         {
-            var libraryContext = _context.BookPriceses.Include(b => b.Book);
+            var libraryContext = _context.BookPrices.Include(b => b.Book);
             return View(await libraryContext.ToListAsync());
         }
 
@@ -34,7 +34,7 @@ namespace SampleMvc.Web.Controllers
                 return NotFound();
             }
 
-            var bookPrice = await _context.BookPriceses
+            var bookPrice = await _context.BookPrices
                 .Include(b => b.Book)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (bookPrice == null)
@@ -77,7 +77,7 @@ namespace SampleMvc.Web.Controllers
                 return NotFound();
             }
 
-            var bookPrice = await _context.BookPriceses.FindAsync(id);
+            var bookPrice = await _context.BookPrices.FindAsync(id);
             if (bookPrice == null)
             {
                 return NotFound();
@@ -130,7 +130,7 @@ namespace SampleMvc.Web.Controllers
                 return NotFound();
             }
 
-            var bookPrice = await _context.BookPriceses
+            var bookPrice = await _context.BookPrices
                 .Include(b => b.Book)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (bookPrice == null)
@@ -146,15 +146,15 @@ namespace SampleMvc.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var bookPrice = await _context.BookPriceses.FindAsync(id);
-            _context.BookPriceses.Remove(bookPrice);
+            var bookPrice = await _context.BookPrices.FindAsync(id);
+            _context.BookPrices.Remove(bookPrice);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
         private bool BookPriceExists(int id)
         {
-            return _context.BookPriceses.Any(e => e.Id == id);
+            return _context.BookPrices.Any(e => e.Id == id);
         }
     }
 }

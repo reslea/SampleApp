@@ -7,7 +7,9 @@ namespace SampleMvc.Data
     {
         public DbSet<Book> Books { get; set; }
 
-        public DbSet<BookPrice> BookPriceses { get; set; }
+        public DbSet<BookPrice> BookPrices { get; set; }
+
+        public DbSet<User> Users { get; set; }
 
         public LibraryContext(DbContextOptions options) : base(options) { }
 

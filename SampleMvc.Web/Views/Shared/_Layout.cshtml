@@ -1,4 +1,11 @@
-﻿<!DOCTYPE html>
+﻿@using System.Security.Claims
+@{
+    var username = Context.User.Claims
+        .FirstOrDefault(c => c.Type == ClaimTypes.Name)
+        ?.Value;
+}
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -29,6 +36,10 @@
                         </li>
                     </ul>
                 </nav>
+                @if (username != null)
+                {
+                    <div>Hello @username</div>
+                }
             </div>
         </nav>
     </header>

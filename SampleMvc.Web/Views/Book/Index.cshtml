@@ -1,4 +1,6 @@
 ﻿@using SampleMvc.Data.Entity
+@using Microsoft.AspNetCore.Http
+@using System.Text
 @model List<BookModel>
 
 @{
@@ -6,12 +8,26 @@
     Layout = "_Layout";
 }
 
-<h1>Filter</h1>
+@{
+    string lastRequest = string.Empty;
+    if (Context.Session.TryGetValue("last request", out var lastRequestBytes))
+    {
+        lastRequest = Encoding.UTF8.GetString(lastRequestBytes);
+    }
+}
+
+<h1>Filter</h1> (last request was: @lastRequest)
+
+
+
+<a asp-action="Add">Add New Book</a>
+
 <form class="filter-form" asp-action="Filter" method="get">
     <input name="title" placeholder="Title" />
     <input name="author" placeholder="Author" />
     <input name="pagesCount" placeholder="Pages count" type="number" />
     <select name="genre">
+        <option>None</option>
         @foreach (var select in Enum.GetValues<Genre>())
         {
             <option value="@((int) select)">@select.ToString()</option>
@@ -22,29 +38,29 @@
 
 <table class="table table-striped">
     <thead>
-    <tr>
-        <th scope="col">Id</th>
-        <th scope="col">Title</th>
-        <th scope="col">Author</th>
-        <th scope="col">Pages Count</th>
-        <th scope="col">Genre</th>
-        <th scope="col">Actions</th>
-    </tr>
+        <tr>
+            <th scope="col">Id</th>
+            <th scope="col">Title</th>
+            <th scope="col">Author</th>
+            <th scope="col">Pages Count</th>
+            <th scope="col">Genre</th>
+            <th scope="col">Actions</th>
+        </tr>
     </thead>
     <tbody>
         @foreach (var book in Model)
         {
-        <tr scope="row">
-            <th>@book.Id</th>
-            <td>@book.Title</td>
-            <td>@book.Author</td>
-            <td>@book.PagesCount</td>
-            <td>@book.Genre</td>
-            <td>
-                @Html.ActionLink("Edit", "Update", book)
-                | <a asp-action="Delete" asp-route-id="@book.Id">Delete</a>
-            </td>
-        </tr>
+            <tr scope="row">
+                <th>@book.Id</th>
+                <td>@book.Title</td>
+                <td>@book.Author</td>
+                <td>@book.PagesCount</td>
+                <td>@book.Genre</td>
+                <td>
+                    @Html.ActionLink("Edit", "Update", book)
+                    | <a asp-action="Delete" asp-route-id="@book.Id">Delete</a>
+                </td>
+            </tr>
         }
     </tbody>
 </table>

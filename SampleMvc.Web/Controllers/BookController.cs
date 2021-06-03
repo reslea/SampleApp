@@ -1,8 +1,12 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
+using System.Security.Claims;
+using System.Text;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using SampleMvc.Data;
 using SampleMvc.Data.Entity;
 using SampleMvc.Web.Models;
@@ -10,6 +14,7 @@ using SampleMvc.Web.Utilities;
 
 namespace SampleMvc.Web.Controllers
 {
+    [EnsureAuthenticated]
     public class BookController : Controller
     {
         private readonly LibraryContext _context;
@@ -22,7 +27,11 @@ namespace SampleMvc.Web.Controllers
         [HttpGet]
         public IActionResult Index()
         {
+            HttpContext.Session.Set("last request", Encoding.UTF8.GetBytes(nameof(Index)));
+            
             var books = _context.Books;
+
+            Debug.WriteLine("ACTION EXECUTION");
 
             var bookModels = books.Select(Map).ToList();
             return View(bookModels);
@@ -31,12 +40,15 @@ namespace SampleMvc.Web.Controllers
         [HttpGet]
         public IActionResult Add()
         {
+            HttpContext.Session.Set("last request", Encoding.UTF8.GetBytes(nameof(Add)));
+
             return View();
         }
 
         [HttpPost]
         public async Task<IActionResult> Add([FromForm] BookModel model)
         {
+            HttpContext.Session.Set("last request", Encoding.UTF8.GetBytes(nameof(Index)));
             if (!ModelState.IsValid)
             {
                 return View(model);
@@ -52,18 +64,23 @@ namespace SampleMvc.Web.Controllers
             });
 
             await _context.SaveChangesAsync();
+
+            //var session = HttpContext.Session;
+                
             return RedirectToAction(nameof(Index));
         }
 
         [HttpGet]
         public IActionResult Update(BookModel model)
         {
+            HttpContext.Session.Set("last request", Encoding.UTF8.GetBytes(nameof(Index)));
             return View(model);
         }
 
         [HttpPost]
         public async Task<IActionResult> UpdatePost([FromForm] BookModel model)
         {
+            HttpContext.Session.Set("last request", Encoding.UTF8.GetBytes(nameof(Index)));
             if (!ModelState.IsValid)
             {
                 return View(nameof(Update), model);
@@ -85,6 +102,7 @@ namespace SampleMvc.Web.Controllers
         [HttpGet]
         public async Task<IActionResult> Delete(int id)
         {
+            HttpContext.Session.Set("last request", Encoding.UTF8.GetBytes(nameof(Index)));
             var book = _context.Books.FirstOrDefault(b => b.Id == id);
             if (book != null)
             {
@@ -99,10 +117,14 @@ namespace SampleMvc.Web.Controllers
         public IActionResult Filter([FromQuery] FilterModel model)
         {
             var books = _context.Books
-                .CoditionalWhere(model.Title != null, b => b.Title.Contains(model.Title))
-                .Where(b => b.Author.Contains(model.Author))
-                .Where(b => b.PagesCount == model.PagesCount)
-                .Where(b => b.Genre == model.Genre)
+                .CoditionalWhere(model.Title != null, 
+                    b => b.Title.Contains(model.Title))
+                .CoditionalWhere(model.Author != null, 
+                    b => b.Author.Contains(model.Author))
+                .CoditionalWhere(model.PagesCount != null, 
+                    b => b.PagesCount == model.PagesCount)
+                .CoditionalWhere(model.Genre != null, 
+                    b => b.Genre == model.Genre)
                 .Select(Map)
                 .ToList();
 

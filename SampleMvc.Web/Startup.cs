@@ -8,6 +8,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using SampleMvc.Data;
 
@@ -27,6 +29,28 @@ namespace SampleMvc.Web
         {
             var connectionString = Configuration.GetConnectionString("LibraryDb");
             services.AddDbContext<LibraryContext>(options => options.UseSqlServer(connectionString));
+
+            //services.AddScoped<IHttpContextAccessor>();
+
+            // for session
+            services.AddDistributedMemoryCache();
+            services.AddSession(options =>
+            {
+                options.IdleTimeout = new TimeSpan(7, 0, 0, 0);
+                //options.Cookie.HttpOnly = true;
+                options.Cookie.IsEssential = true;
+            });
+
+            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+                .AddCookie(options =>
+                {
+                    options.SlidingExpiration = true;
+                    options.ExpireTimeSpan = new TimeSpan(7, 0, 0, 0);
+                    options.Cookie.Name = "Auth";
+
+                    options.LoginPath = "/Auth/Login";
+                    options.AccessDeniedPath = "/Auth/AccessDenied";
+                });
 
             services.AddControllersWithViews();
         }
@@ -49,6 +73,9 @@ namespace SampleMvc.Web
 
             app.UseRouting();
 
+            app.UseSession();
+
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
