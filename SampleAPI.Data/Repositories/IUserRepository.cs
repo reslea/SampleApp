@@ -11,6 +11,8 @@ namespace SampleAPI.Data.Repositories
 
         User Get(int id);
 
+        User Get(string email, string password);
+
         void Create(User user);
 
         void Delete(User user);

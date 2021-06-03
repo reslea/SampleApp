@@ -10,9 +10,12 @@ using Microsoft.OpenApi.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using SampleAPI.Data;
 using SampleAPI.Data.Entities;
 using SampleAPI.Data.Repositories;
@@ -39,6 +42,22 @@ namespace SampleApi.Web
             services.AddScoped<IUnitOfWork, UnitOfWork>();
 
             services.AddAutoMapper(GetType());
+
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(options =>
+                {
+                    const string issuer = "OurAsp.Net API";
+                    var securityKey = Configuration["SecurityKey"];
+                    var keyBytes = Encoding.UTF8.GetBytes(securityKey);
+
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidIssuer = issuer,
+                        ValidateLifetime = true,
+                        ValidateIssuerSigningKey = true,
+                        IssuerSigningKey = new SymmetricSecurityKey(keyBytes)
+                    };
+                });
 
             services.AddDbContext<SocialNetworkDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("SocialNetworkDb")));
 

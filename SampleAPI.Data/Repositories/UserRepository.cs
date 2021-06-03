@@ -26,6 +26,11 @@ namespace SampleAPI.Data.Repositories
             return _set.FirstOrDefault(u => u.Id == id);
         }
 
+        public User Get(string email, string password)
+        {
+            return _set.FirstOrDefault(u => u.Email == email && u.Password == password);
+        }
+
         public void Create(User user)
         {
             _set.Add(user);
