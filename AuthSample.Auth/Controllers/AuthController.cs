@@ -8,6 +8,10 @@ using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 using AuthSample.Auth.Models;
+using AuthSample.AuthDb;
+using AuthSample.AuthDb.Entities;
+using AuthSample.Core;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 
 namespace AuthSample.Auth.Controllers
@@ -16,17 +20,60 @@ namespace AuthSample.Auth.Controllers
     [ApiController]
     public class AuthController : ControllerBase
     {
+        private readonly AuthDbContext _context;
+
+        public AuthController(AuthDbContext context)
+        {
+            _context = context;
+        }
+
         [HttpPost]
-        public IActionResult Login(LoginModel model)
+        public async Task<IActionResult> Login(LoginModel model)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            var identity = HttpContext.User.Identity;
+            var user = await _context.Users
+                .Include(u => u.RefreshToken)
+                .Include(u => u.Role)
+                .ThenInclude(r => r.RolePermissions)
+                .FirstOrDefaultAsync(u => 
+                    u.Email == model.Email && u.Password == model.Password);
 
-            var user = model;
+            if (user is null)
+            {
+                return BadRequest();
+            }
+
+            var stringToken = GetUserToken(user);
+            
+            return Ok(stringToken);
+        }
+
+        [HttpPost("refresh")]
+        public async Task<IActionResult> Login(RefreshTokenModel model)
+        {
+            var user = (await _context.RefreshTokens
+                .Include(_ => _.User)
+                .ThenInclude(_ => _.Role)
+                .ThenInclude(_ => _.RolePermissions)
+                .FirstOrDefaultAsync(_ => _.Value == model.RefreshToken)
+                )?.User;
+
+            if (user is null)
+            {
+                return BadRequest();
+            }
+
+            var stringToken = GetUserToken(user);
+
+            return Ok(stringToken);
+        }
+
+        private TokenModel GetUserToken(User user)
+        {
             var secret = Encoding.UTF8.GetBytes("SuperDuperSecretKey");
 
             var claims = new List<Claim>
@@ -34,17 +81,35 @@ namespace AuthSample.Auth.Controllers
                 new Claim(ClaimTypes.Email, user.Email),
             };
 
+            var permissions = user.Role.RolePermissions
+                .Select(rp => 
+                    new Claim("permission", rp.PermissionType.ToString()));
+
+            claims.AddRange(permissions);
+
             var now = DateTime.Now;
 
             var jwt = new JwtSecurityToken(
                 notBefore: now,
-                expires: now.AddMinutes(30),
+                expires: now.AddMinutes(1),
                 claims: claims,
                 signingCredentials: new SigningCredentials(new SymmetricSecurityKey(secret), SecurityAlgorithms.HmacSha256));
 
             var stringToken = new JwtSecurityTokenHandler().WriteToken(jwt);
-            
-            return Ok(stringToken);
+
+            var refreshToken = Guid.NewGuid();
+            if (user.RefreshToken is null)
+            {
+                user.RefreshToken = new RefreshToken { Value = refreshToken };
+            }
+            else
+            {
+                user.RefreshToken.Value = refreshToken;
+            }
+
+            _context.SaveChanges();
+
+            return new TokenModel {JwtToken = stringToken, RefreshToken = refreshToken };
         }
     }
 }
