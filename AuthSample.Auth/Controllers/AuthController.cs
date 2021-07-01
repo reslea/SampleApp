@@ -67,9 +67,9 @@ namespace AuthSample.Auth.Controllers
                 return BadRequest();
             }
 
-            var stringToken = GetUserToken(user);
+            var tokenModel = GetUserToken(user);
 
-            return Ok(stringToken);
+            return Ok(tokenModel);
         }
 
         private TokenModel GetUserToken(User user)
@@ -91,7 +91,7 @@ namespace AuthSample.Auth.Controllers
 
             var jwt = new JwtSecurityToken(
                 notBefore: now,
-                expires: now.AddMinutes(1),
+                expires: now.AddSeconds(10),
                 claims: claims,
                 signingCredentials: new SigningCredentials(new SymmetricSecurityKey(secret), SecurityAlgorithms.HmacSha256));
 

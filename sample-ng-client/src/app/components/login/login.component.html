@@ -4,3 +4,7 @@
 
   <button (click)="login()">Login</button>
 </div>
+
+<div *ngIf="service.token$.value">
+  <app-books></app-books>
+</div>
