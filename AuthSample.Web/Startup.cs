@@ -45,7 +45,8 @@ namespace AuthSample.Web
                 {
                     options.RequireHttpsMetadata = false;
 
-                    var secret = Encoding.UTF8.GetBytes("SuperDuperSecretKey");
+                    var secretKey = Configuration["jwtSecret"];
+                    var secret = Encoding.UTF8.GetBytes(secretKey);
 
                     options.TokenValidationParameters = new TokenValidationParameters
                     {

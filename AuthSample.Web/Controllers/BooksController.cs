@@ -26,13 +26,15 @@ namespace AuthSample.Web.Controllers
             },
         };
 
-        [HttpGet, RequirePermission(PermissionType.ReadBooks)]
+        [HttpGet]
+        [RequirePermission(PermissionType.ReadBooks)]
         public IActionResult GetAll()
         {
             return Ok(BookModels);
         }
 
-        [HttpPost, RequirePermission(PermissionType.EditBooks)]
+        [HttpPost]
+        [RequirePermission(PermissionType.EditBooks)]
         public IActionResult CreateBook(BookModel model)
         {
             if (!ModelState.IsValid)
