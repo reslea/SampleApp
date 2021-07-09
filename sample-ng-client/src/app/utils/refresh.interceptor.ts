@@ -6,19 +6,26 @@ import {
   HttpInterceptor,
   HttpHeaders
 } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, empty } from 'rxjs';
 import { LoginService } from '../services/login.service';
 import { mergeMap } from 'rxjs/operators';
+import { Router } from '@angular/router';
 
 @Injectable()
 export class RefreshInterceptor implements HttpInterceptor {
 
-  constructor(readonly authService: LoginService) {}
+  constructor(readonly authService: LoginService,
+    private router: Router) {}
 
   intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
     if(request.url.includes(this.authService.authApiLink))
     {
       return next.handle(request);
+    }
+
+    if(!this.authService.token$.value || !this.authService.refreshToken$.value) {
+      this.router.navigate(['/login']);
+      return empty();
     }
     
     const isTokenExpired = this.authService.token$.value.expires <= new Date();

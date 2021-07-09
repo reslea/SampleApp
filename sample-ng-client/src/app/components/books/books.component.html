@@ -1,8 +1,10 @@
-<h5>Books</h5>
+<div *ngIf="hasPermissions">
+  <h5>Books</h5>
 
-<ul>
-  <li *ngFor="let book of books">
-    {{book.id}} {{book.title}}
-  </li>
-  <button (click)="loadData()">Load</button>
-</ul>
+  <ul>
+    <li *ngFor="let book of (books$ | async)">
+      {{book.id}} {{book.title}}
+    </li>
+    <button (click)="loadData()">Load</button>
+  </ul>
+</div>

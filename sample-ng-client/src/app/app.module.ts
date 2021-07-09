@@ -12,12 +12,14 @@ import { LoginService } from './services/login.service';
 import { BooksService } from './services/books.service';
 import { AuthInterceptor } from './utils/auth.interceptor';
 import { RefreshInterceptor } from './utils/refresh.interceptor';
+import { BooksPageComponent } from './pages/books-page/books-page.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     LoginComponent,
-    BooksComponent
+    BooksComponent,
+    BooksPageComponent
   ],
   imports: [
     BrowserModule,

@@ -19,6 +19,6 @@ export class LoginComponent {
     const loginData = { email: this.email, password: this.password };
 
       this.service.login(loginData)
-        .subscribe(tokenData =>  this.tokenData = tokenData);
+        .subscribe(tokenData => this.tokenData = tokenData);
   }
 }

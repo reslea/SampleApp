@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { map, tap } from 'rxjs/operators';
 import { BehaviorSubject } from 'rxjs';
-
+import { Router, Route } from '@angular/router';
 
 export interface TokenModel {
   jwtToken: string,
@@ -16,9 +16,9 @@ export interface TokenData {
   rawToken: string
 }
 
-export const permissions = { 
-  readBooks: 'ReadBooks',
-  editBooks: 'EditBooks'
+export enum Permission { 
+  readBooks = 'ReadBooks',
+  editBooks = 'EditBooks',
 }
 
 @Injectable({
@@ -31,12 +31,13 @@ export class LoginService {
   token$ = new BehaviorSubject<TokenData>(null);
   refreshToken$ = new BehaviorSubject<string>(null);
 
-  constructor(private http: HttpClient) {
-    // const rawToken = localStorage.getItem(this.tokenKey);
-    // if(rawToken) {
-    //   const tokenData = this.getTokenData(rawToken);
-    //   this.token$.next(tokenData);
-    // }
+  constructor(private http: HttpClient,
+    private router: Router) {
+    const rawToken = localStorage.getItem(this.tokenKey);
+    if(rawToken) {
+      const tokenData = this.getTokenData(rawToken);
+      this.token$.next(tokenData);
+    }
    }
 
   login(loginData) {
@@ -45,9 +46,10 @@ export class LoginService {
         tap(model => {
           this.refreshToken$.next(model.refreshToken);
           this.token$.next(this.getTokenData(model.jwtToken));
-          // localStorage.setItem(this.tokenKey, model.jwtToken);
+          localStorage.setItem(this.tokenKey, model.jwtToken);
         }),
         map(model => this.getTokenData(model.jwtToken)),
+        tap(() => this.router.navigate(['/'])),
       )
   }
 
