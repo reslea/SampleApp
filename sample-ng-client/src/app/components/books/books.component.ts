@@ -1,8 +1,8 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { BookModel, BooksService } from '../../services/books.service';
+import { BookModel, BooksRequestService } from '../../services/books-request.service';
 import { Permission, LoginService } from '../../services/login.service';
 import { Observable, BehaviorSubject } from 'rxjs';
-import { mergeMap } from 'rxjs/operators';
+import {mergeMap, tap} from 'rxjs/operators';
 
 @Component({
   selector: 'app-books',
@@ -16,8 +16,8 @@ export class BooksComponent implements OnInit {
 
   books$ = new BehaviorSubject<BookModel[]>([]);
 
-  constructor(private service: BooksService,
-    private authService: LoginService) { 
+  constructor(private service: BooksRequestService,
+              private authService: LoginService) {
       console.log('constructing');
     }
 
@@ -25,21 +25,43 @@ export class BooksComponent implements OnInit {
     this.checkPermissions();
   }
 
-  loadData() {
+  loadData(): void {
     this.service.getAll()
     .subscribe(books => this.books$.next(books));
   }
 
-  checkPermissions() {
+  addBook(model: BookModel): void {
+    this.service.add(model)
+      .subscribe(addedBook =>
+        this.books$.next([...this.books$.value, addedBook]));
+  }
+
+  updateBook(model: BookModel): void {
+    this.service.update(model)
+      .subscribe(() =>
+        this.books$.next(
+          this.books$.value.map(b => b.id === model.id
+            ? model
+            : b))
+      );
+  }
+  removeBook(id: number): void {
+    this.service.remove(id)
+      .subscribe(() =>
+        this.books$.next(
+          this.books$.value.filter(b => b.id !== id)));
+  }
+
+  checkPermissions(): void {
     const requiredPermissions = this.permissions;
 
     this.authService.token$
       .subscribe((token) => {
-        if(!requiredPermissions) return;
-        for(const permission of requiredPermissions) {
+        if (!requiredPermissions) { return; }
+        for (const permission of requiredPermissions) {
           const hasPermission = token.permissions.includes(permission);
 
-          if(!hasPermission) {
+          if (!hasPermission) {
             this.hasPermissions = false;
             return;
           }

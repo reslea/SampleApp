@@ -31,7 +31,25 @@ namespace AuthSample.Web.Tests
 
             Assert.Equal(1, books.Count);
         }
-        
+
+        [Fact]
+        public async Task GetBookById()
+        {
+            AddTokenWithPermissions(new List<PermissionType>
+            {
+                PermissionType.ReadBooks
+            });
+
+            var expectedId = 1;
+
+            var jsonString = await _client.GetStringAsync(
+                $"api/books/{expectedId}");
+            var book = JsonConvert.DeserializeObject<BookModel>(jsonString);
+
+            Assert.NotNull(book);
+            Assert.Equal(expectedId, book.Id);
+        }
+
         [Fact]
         public async Task CreateBook()
         {
@@ -55,6 +73,43 @@ namespace AuthSample.Web.Tests
             var response = await _client.PostAsync("api/books", content);
 
             Assert.Equal(HttpStatusCode.NoContent, response.StatusCode);
+        }
+
+        [Fact]
+        public async Task UpdateBook()
+        {
+            AddTokenWithPermissions(new List<PermissionType>
+            {
+                PermissionType.EditBooks
+            });
+
+            var book = new BookModel
+            {
+                Title = "updatedTitle",
+                Author = "updatedAuthor",
+                PagesCount = 200,
+                PublishDate = DateTime.Now.AddYears(-2)
+            };
+            var json = JsonConvert.SerializeObject(book);
+
+            var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+            var response = await _client.PutAsync("api/books/1", content);
+
+            Assert.True(response.IsSuccessStatusCode);
+        }
+
+        [Fact]
+        public async Task DeleteBook()
+        {
+            AddTokenWithPermissions(new List<PermissionType>
+            {
+                PermissionType.EditBooks
+            });
+
+            var response = await _client.DeleteAsync("api/books/1");
+
+            Assert.True(response.IsSuccessStatusCode);
         }
     }
 }

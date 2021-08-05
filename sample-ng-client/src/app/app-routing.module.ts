@@ -7,10 +7,10 @@ import { BooksPageComponent } from './pages/books-page/books-page.component';
 
 const routes: Routes = [
   { path: 'login', component: LoginComponent },
-  { 
-    path: '', pathMatch: 'full', 
-    component: BooksPageComponent, 
-    canActivate: [PermissionGuard], 
+  {
+    path: '', pathMatch: 'full',
+    component: BooksPageComponent,
+    canActivate: [PermissionGuard],
       data: {
       permissions: [Permission.readBooks]
     },

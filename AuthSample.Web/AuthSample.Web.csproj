@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
@@ -13,6 +13,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\AuthSample.Core\AuthSample.Core.csproj" />
+    <ProjectReference Include="..\AuthSample.Web.Logic\AuthSample.Web.Logic.csproj" />
+    <ProjectReference Include="..\AuthSample.WebDb\AuthSample.WebDb.csproj" />
   </ItemGroup>
 
 </Project>

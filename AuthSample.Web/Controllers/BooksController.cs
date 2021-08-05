@@ -1,13 +1,10 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using System;
 using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using AuthSample.Core;
+using AuthSample.Web.Logic;
 using AuthSample.Web.Models;
 using AuthSample.Web.Utilities;
-using Microsoft.AspNetCore.Authorization;
+using AuthSample.WebDb;
 
 namespace AuthSample.Web.Controllers
 {
@@ -15,22 +12,27 @@ namespace AuthSample.Web.Controllers
     [ApiController]
     public class BooksController : ControllerBase
     {
-        public static List<BookModel> BookModels = new List<BookModel>
+        private readonly IBookService _service;
+
+        public BooksController(IBookService service)
         {
-            new BookModel
-            {
-                Author = "Дж. Роулинг",
-                Title = "и Философский камень",
-                PagesCount = 300,
-                PublishDate = new DateTime(1997, 3,3)
-            },
-        };
+            _service = service;
+        }
 
         [HttpGet]
         [RequirePermission(PermissionType.ReadBooks)]
         public IActionResult GetAll()
         {
-            return Ok(BookModels);
+            return Ok(_service.GetAll());
+        }
+
+        [HttpGet("{id}")]
+        [RequirePermission(PermissionType.ReadBooks)]
+        public IActionResult Get(int id)
+        {
+            var book = _service.Get(id);
+
+            return Ok(book);
         }
 
         [HttpPost]
@@ -42,9 +44,66 @@ namespace AuthSample.Web.Controllers
                 return BadRequest(ModelState);
             }
 
-            BookModels.Add(model);
+            var created = _service.Create(Map(model));
+
+            return Ok(Map(created));
+        }
+
+        [HttpPut("{id}")]
+        [RequirePermission(PermissionType.EditBooks)]
+        public IActionResult UpdateBook(int id, BookModel model)
+        {
+            try
+            {
+                model.Id = id;
+                _service.Update(Map(model));
+            }
+            catch (ArgumentException)
+            {
+                return NotFound($"Book with id {id} not found");
+            }
 
             return NoContent();
+        }
+
+        [HttpDelete("{id}")]
+        [RequirePermission(PermissionType.EditBooks)]
+        public IActionResult DeleteBook(int id)
+        {
+            try
+            {
+                _service.Delete(id);
+            }
+            catch (ArgumentException)
+            {
+                return NotFound($"Book with id {id} not found");
+            }
+
+            return NoContent();
+        }
+
+        public static Book Map(BookModel model)
+        {
+            return new Book
+            {
+                Id = model.Id,
+                Title = model.Title,
+                Author = model.Author,
+                PagesCount = model.PagesCount,
+                PublishDate = model.PublishDate
+            };
+        }
+
+        public static BookModel Map(Book model)
+        {
+            return new BookModel
+            {
+                Id = model.Id,
+                Title = model.Title,
+                Author = model.Author,
+                PagesCount = model.PagesCount,
+                PublishDate = model.PublishDate
+            };
         }
     }
 }

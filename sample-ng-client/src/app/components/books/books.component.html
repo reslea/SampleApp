@@ -5,6 +5,8 @@
     <li *ngFor="let book of (books$ | async)">
       {{book.id}} {{book.title}}
     </li>
-    <button (click)="loadData()">Load</button>
   </ul>
+  <button (click)="loadData()">Load</button>
+
+  <app-add-book [addBook]="addBook"></app-add-book>
 </div>

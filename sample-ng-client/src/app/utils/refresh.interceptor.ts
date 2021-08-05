@@ -15,31 +15,31 @@ import { Router } from '@angular/router';
 export class RefreshInterceptor implements HttpInterceptor {
 
   constructor(readonly authService: LoginService,
-    private router: Router) {}
+              private router: Router) {}
 
   intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
-    if(request.url.includes(this.authService.authApiLink))
+    if (request.url.includes(this.authService.authApiLink))
     {
       return next.handle(request);
     }
 
-    if(!this.authService.token$.value || !this.authService.refreshToken$.value) {
+    if (!this.authService.token$.value || !this.authService.refreshToken$.value) {
       this.router.navigate(['/login']);
       return empty();
     }
-    
+
     const isTokenExpired = this.authService.token$.value.expires <= new Date();
 
-    if(isTokenExpired) {
+    if (isTokenExpired) {
       return this.authService.refresh()
       .pipe(
-        mergeMap(tokenModel => {
+        mergeMap(tokenData => {
           const cloned = request.clone({
             headers: new HttpHeaders({
-              'Authorization': `Bearer ${tokenModel.jwtToken}`
+              Authorization: `Bearer ${tokenData.rawToken}`
             })
           });
-      
+
           return next.handle(cloned);
         })
       );

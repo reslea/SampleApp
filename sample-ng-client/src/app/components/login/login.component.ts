@@ -8,17 +8,17 @@ import { LoginService, TokenData } from '../../services/login.service';
 })
 export class LoginComponent {
 
-  email: string = 'testuser@gmail.com';
-  password: string = 'password';
+  email = 'testadmin@gmail.com';
+  password = 'password';
 
   tokenData: TokenData;
 
   constructor(readonly service: LoginService) { }
 
-  login() {
+  login(): void {
     const loginData = { email: this.email, password: this.password };
 
-      this.service.login(loginData)
+    this.service.login(loginData)
         .subscribe(tokenData => this.tokenData = tokenData);
   }
 }

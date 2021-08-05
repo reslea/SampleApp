@@ -1,0 +1,9 @@
+<form #form="ngForm" (ngSubmit)="submit(form)">
+  <h3>Add</h3>
+  <input [(ngModel)]="book.title" name="title" />
+  <input [(ngModel)]="book.author" name="author" />
+  <input type="number" [(ngModel)]="book.pagesCount" name="pagesCount" />
+  <input type="date" [(ngModel)]="book.publishDate" name="publishDate" />
+
+  <button type="submit">Add</button>
+</form>

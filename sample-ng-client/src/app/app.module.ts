@@ -9,17 +9,19 @@ import { LoginComponent } from './components/login/login.component';
 import { BooksComponent } from './components/books/books.component';
 
 import { LoginService } from './services/login.service';
-import { BooksService } from './services/books.service';
+import { BooksRequestService } from './services/books-request.service';
 import { AuthInterceptor } from './utils/auth.interceptor';
 import { RefreshInterceptor } from './utils/refresh.interceptor';
 import { BooksPageComponent } from './pages/books-page/books-page.component';
+import { AddBookComponent } from './components/add-book/add-book.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     LoginComponent,
     BooksComponent,
-    BooksPageComponent
+    BooksPageComponent,
+    AddBookComponent
   ],
   imports: [
     BrowserModule,
@@ -29,7 +31,7 @@ import { BooksPageComponent } from './pages/books-page/books-page.component';
   ],
   providers: [
     LoginService,
-    BooksService,   
+    BooksRequestService,
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: RefreshInterceptor, multi: true },
   ],

@@ -5,6 +5,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using System.Text;
+using AuthSample.Web.Logic;
+using AuthSample.WebDb;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 
@@ -34,6 +36,9 @@ namespace AuthSample.Web
             });
 
             services.AddControllers();
+
+            services.AddScoped<IBookRepository, BooksRepository>();
+            services.AddScoped<IBookService, BookService>();
 
             services.AddSwaggerGen(c =>
             {
