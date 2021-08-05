@@ -1,0 +1,10 @@
+input {
+  background-color: aqua;
+  border-radius: 10px;
+  font-size: 1rem;
+}
+
+.validation-message {
+  color: red;
+  font-weight: bold;
+}

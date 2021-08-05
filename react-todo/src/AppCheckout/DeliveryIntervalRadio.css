@@ -1,0 +1,7 @@
+.time-interval {
+  text-align: center;
+}
+
+.time-interval .selected {
+  font-weight: bold;
+}
