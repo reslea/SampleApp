@@ -1,4 +1,6 @@
-<form #form="ngForm" (ngSubmit)="submit(form)">
+<form #form="ngForm"
+      (ngSubmit)="submit(form)"
+      *ngIf="!isSendingData else spinner">
   <h3>Add</h3>
   <input [(ngModel)]="book.title" name="title" />
   <input [(ngModel)]="book.author" name="author" />
@@ -7,3 +9,7 @@
 
   <button type="submit">Add</button>
 </form>
+
+<ng-template #spinner>
+  <app-spinner></app-spinner>
+</ng-template>

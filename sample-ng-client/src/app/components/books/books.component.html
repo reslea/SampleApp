@@ -1,12 +1,23 @@
-<div *ngIf="hasPermissions">
+<div *ngIf="hasPermissions else noPermission">
   <h5>Books</h5>
 
-  <ul>
-    <li *ngFor="let book of (books$ | async)">
-      {{book.id}} {{book.title}}
+  <ul
+    class="list"
+    *ngIf="!isLoading else spinner"
+  >
+    <li
+      class="list__item"
+      *ngFor="let book of (books$ | async)"
+    >
+      {{book.id}} <b>{{book.title}}</b>
     </li>
   </ul>
-  <button (click)="loadData()">Load</button>
 
-  <app-add-book [addBook]="addBook"></app-add-book>
+  <app-add-book></app-add-book>
 </div>
+
+<ng-template #spinner>
+  <app-spinner></app-spinner>
+</ng-template>
+<ng-template #noPermission>
+</ng-template>

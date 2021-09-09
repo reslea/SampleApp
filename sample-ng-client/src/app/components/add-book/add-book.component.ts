@@ -1,5 +1,5 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {BookModel, BooksRequestService} from '../../services/books-request.service';
+import {BookModel, BooksDataRequestService} from '../../services/books-data-request.service';
 import {NgForm} from '@angular/forms';
 
 @Component({
@@ -9,22 +9,26 @@ import {NgForm} from '@angular/forms';
 })
 export class AddBookComponent implements OnInit {
 
+
   book: BookModel = {
     title: '',
     author: '',
     pagesCount: 0,
     publishDate: null
   };
+  isSendingData = false;
 
-  @Input()
-  addBook: (BookModel) => void;
-
-  constructor(private readonly service: BooksRequestService) { }
+  constructor(private readonly service: BooksDataRequestService) { }
 
   ngOnInit(): void {
   }
 
   submit(form: NgForm): void {
-    this.addBook(form.value as BookModel);
+    const newBook = form.value as BookModel;
+
+    this.isSendingData = true;
+    this.service.add(newBook).subscribe(() => {
+      this.isSendingData = false;
+    });
   }
 }

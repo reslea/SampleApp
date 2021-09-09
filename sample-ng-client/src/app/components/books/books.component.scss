@@ -1,0 +1,11 @@
+.list {
+  color: blueviolet;
+
+  &__item {
+    font-size: 2rem;
+
+    &:hover {
+      color: red;
+    }
+  }
+}

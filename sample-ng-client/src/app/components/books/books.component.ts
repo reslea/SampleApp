@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { BookModel, BooksRequestService } from '../../services/books-request.service';
+import { BookModel, BooksDataRequestService } from '../../services/books-data-request.service';
 import { Permission, LoginService } from '../../services/login.service';
 import { Observable, BehaviorSubject } from 'rxjs';
 import {mergeMap, tap} from 'rxjs/operators';
@@ -14,42 +14,34 @@ export class BooksComponent implements OnInit {
   permissions?: Permission[];
   hasPermissions = true;
 
-  books$ = new BehaviorSubject<BookModel[]>([]);
+  isLoading = false;
 
-  constructor(private service: BooksRequestService,
+  books$: BehaviorSubject<BookModel[]>;
+
+  constructor(private service: BooksDataRequestService,
               private authService: LoginService) {
-      console.log('constructing');
-    }
+    this.books$ = service.books$;
+  }
 
   ngOnInit(): void {
     this.checkPermissions();
+    this.loadData();
   }
 
   loadData(): void {
-    this.service.getAll()
-    .subscribe(books => this.books$.next(books));
+    this.isLoading = true;
+    this.service.getAll().subscribe(() => this.isLoading = false);
   }
 
   addBook(model: BookModel): void {
-    this.service.add(model)
-      .subscribe(addedBook =>
-        this.books$.next([...this.books$.value, addedBook]));
+    this.service.add(model).subscribe();
   }
 
   updateBook(model: BookModel): void {
-    this.service.update(model)
-      .subscribe(() =>
-        this.books$.next(
-          this.books$.value.map(b => b.id === model.id
-            ? model
-            : b))
-      );
+    this.service.update(model).subscribe();
   }
   removeBook(id: number): void {
-    this.service.remove(id)
-      .subscribe(() =>
-        this.books$.next(
-          this.books$.value.filter(b => b.id !== id)));
+    this.service.remove(id).subscribe();
   }
 
   checkPermissions(): void {

@@ -5,7 +5,7 @@ export function AddBook({add}) {
     title: "",
     author: "",
     pagesCount: 0,
-    publishDate: "",
+    publishDate: null,
   });
 
   function onSubmit(e) {
