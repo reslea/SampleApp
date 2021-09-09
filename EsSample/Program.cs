@@ -27,10 +27,11 @@ namespace EsSample
             var creds = EventStoreHelpers.GetCredentials();
 
             var result = await pm.GetResultAsync("money-for-account-ceda5c05-f314-4f04-91ad-1b8cad4d929e", creds);
-
-            var fileStr = await File.ReadAllTextAsync("test.js");
-            await pm.CreateContinuousAsync("test", fileStr);
             Console.WriteLine(result);
+
+            // projection create from file sample
+            //var fileStr = await File.ReadAllTextAsync("test.js");
+            //await pm.CreateContinuousAsync("test", fileStr);
         }
 
         static void ProcessEvent(
