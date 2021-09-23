@@ -109,7 +109,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EsSample.CreateOrder", "EsS
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EsSample.Payments", "EsSample.Payments\EsSample.Payments.csproj", "{A54911EB-CE69-493E-BF60-F13AFCF53DCA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EventStoreAccount", "EventStoreAccount\EventStoreAccount.csproj", "{6B76148D-8905-4CBA-BDF9-D4F21AB4C273}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EventStoreAccount", "EventStoreAccount\EventStoreAccount.csproj", "{6B76148D-8905-4CBA-BDF9-D4F21AB4C273}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EsSample.Orders", "EsSample.Orders\EsSample.Orders.csproj", "{A8C55797-6D5A-41DD-A507-A607304D1517}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -293,6 +295,10 @@ Global
 		{6B76148D-8905-4CBA-BDF9-D4F21AB4C273}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6B76148D-8905-4CBA-BDF9-D4F21AB4C273}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6B76148D-8905-4CBA-BDF9-D4F21AB4C273}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A8C55797-6D5A-41DD-A507-A607304D1517}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A8C55797-6D5A-41DD-A507-A607304D1517}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A8C55797-6D5A-41DD-A507-A607304D1517}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A8C55797-6D5A-41DD-A507-A607304D1517}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -346,6 +352,7 @@ Global
 		{118ABC7B-298C-44FD-9CB3-0671D403197F} = {0F6136AC-5659-431D-94A4-56677CCC62F4}
 		{A54911EB-CE69-493E-BF60-F13AFCF53DCA} = {0F6136AC-5659-431D-94A4-56677CCC62F4}
 		{6B76148D-8905-4CBA-BDF9-D4F21AB4C273} = {0F6136AC-5659-431D-94A4-56677CCC62F4}
+		{A8C55797-6D5A-41DD-A507-A607304D1517} = {0F6136AC-5659-431D-94A4-56677CCC62F4}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {366F6785-1605-47EC-80C7-072BBBB277DD}

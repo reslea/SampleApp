@@ -1,13 +1,15 @@
-﻿namespace EventStoreAccount
+﻿using System;
+
+namespace EventStoreAccount
 {
     public class AccountStateCheckpoint
     {
         public int Id { get; set; }
 
-        public int AccountStateId { get; set; }
+        public Guid AccountStateId { get; set; }
         
         public AccountState AccountState { get; set; }
 
-        public int LastProcessedEventNumber { get; set; }
+        public long LastProcessedEventNumber { get; set; }
     }
 }

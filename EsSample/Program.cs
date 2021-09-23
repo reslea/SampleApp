@@ -26,7 +26,9 @@ namespace EsSample
             var pm = EventStoreHelpers.CreateProjectionsManager();
             var creds = EventStoreHelpers.GetCredentials();
 
-            var result = await pm.GetResultAsync("money-for-account-ceda5c05-f314-4f04-91ad-1b8cad4d929e", creds);
+            var projection = "money-for-accounts";
+            var partitionId = "account-e3f62a80-a504-4cfb-97f1-b9a003535da8";
+            var result = await pm.GetPartitionResultAsync(projection, partitionId, creds);
             Console.WriteLine(result);
 
             // projection create from file sample

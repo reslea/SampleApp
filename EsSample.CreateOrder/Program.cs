@@ -39,23 +39,4 @@ namespace EsSample.CreateOrder
             await connection.AppendToStreamAsync(streamName, ExpectedVersion.Any, evt);
         }
     }
-
-    public class Order
-    {
-        public Guid Id { get; set; } = Guid.NewGuid();
-
-        public List<Product> Products { get; set; } = new List<Product>();
-
-        public decimal TotalPrice => Products.Sum(p => p.Price);
-    }
-
-    public class Product
-    {
-        public Guid Id { get; set; } = Guid.NewGuid();
-
-        public string Title { get; set; }
-
-        public decimal Price { get; set; }
-
-    }
 }

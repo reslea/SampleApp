@@ -7,7 +7,7 @@ namespace EventStoreAccount
 {
     public class AccountState
     {
-        public int Id { get; set; }
+        public Guid Id { get; set; }
 
         public decimal MoneyAmount { get; set; }
         
@@ -18,16 +18,17 @@ namespace EventStoreAccount
             var eventAmount = Encoding.UTF8.GetString(data);
             var amount = JObject.Parse(eventAmount)["amount"].ToObject<decimal>();
 
-            if (evt.Event.EventType == "Receipt")
+            switch (evt.Event.EventType)
             {
-                MoneyAmount += amount;
-
-            } else if (evt.Event.EventType == "Withdrawal")
-            {
-                MoneyAmount -= amount;
+                case "Receipt":
+                    MoneyAmount += amount;
+                    break;
+                case "Withdrawal":
+                    MoneyAmount -= amount;
+                    break;
             }
 
-            Console.WriteLine($"currentl account state: {MoneyAmount}");
+            Console.WriteLine($"current account state: {MoneyAmount}");
         }
     }
 }
