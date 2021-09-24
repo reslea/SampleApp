@@ -75,9 +75,6 @@ namespace EsSample.Orders.Extentions
             order.Update(evt);
             checkpoint.LastProcessedEventNumber = evt.EventNumber;
 
-            context.Entry(order).State = EntityState.Modified;
-            context.Entry(checkpoint).State = EntityState.Modified;
-
             context.SaveChanges();
         }
 
