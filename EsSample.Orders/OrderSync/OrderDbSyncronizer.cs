@@ -2,64 +2,73 @@
 using EsSample.Orders.Database.Entities;
 using EventStore.ClientAPI;
 using EventStore.ClientAPI.SystemData;
-using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace EsSample.Orders.Extentions
+namespace EsSample.Orders.OrderSync
 {
-    public static class ApplicationBuilderExtentions
+    public class OrderDbSyncronizer : IOrderDbSyncronizer
     {
-        public static void EnableOrderStateSyncronisation(this IApplicationBuilder app)
+        private readonly string streamName = "$ce-order";
+        private readonly IEventStoreConnection eventStoreConnection;
+        private readonly UserCredentials userCredentials;
+        private readonly OrdersDbContext context;
+
+        public OrderDbSyncronizer(
+            IEventStoreConnection eventStoreConnection,
+            UserCredentials userCredentials,
+            OrdersDbContext context)
         {
-            var scopeFactory = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>();
-
-            using var scope = scopeFactory.CreateScope();
-            var esConnection = scope.ServiceProvider.GetService<IEventStoreConnection>();
-            var esCredentials = scope.ServiceProvider.GetService<UserCredentials>();
-
-            var context = scope.ServiceProvider.GetService<OrdersDbContext>();
-
-            var streamName = "$ce-order";
-
-            ProcessExistingEvents(streamName, context, esConnection, esCredentials);
-            SubscribeToFutureEvents(streamName, esConnection, context);
+            this.eventStoreConnection = eventStoreConnection;
+            this.userCredentials = userCredentials;
+            this.context = context;
         }
 
-        private static void SubscribeToFutureEvents(string streamName, IEventStoreConnection esConnection, OrdersDbContext context)
-        {
-            Task.Run(() => esConnection.SubscribeToStreamAsync(streamName, true, (sub, evt) =>
-            {
-                UpdateOrderState(evt, context);
-            }));
-        }
-
-        private static void ProcessExistingEvents(string streamName, OrdersDbContext context, IEventStoreConnection esConnection, UserCredentials esCredentials)
+        public void ProcessExistingEvents()
         {
             var isEndOfStream = false;
             var lastProcessEventNumber = 0;
+            var batchSize = 100;
 
             while (!isEndOfStream)
             {
-                var oldEvents = esConnection.ReadStreamEventsForwardAsync(
+                var oldEvents = eventStoreConnection.ReadStreamEventsForwardAsync(
                     streamName,
                     lastProcessEventNumber,
-                    1000,
+                    batchSize,
                     true,
-                    esCredentials).Result;
+                    userCredentials).Result;
 
                 foreach (var evt in oldEvents.Events)
                 {
                     UpdateOrderState(evt, context);
                 }
+
+                lastProcessEventNumber += batchSize;
+                isEndOfStream = oldEvents.IsEndOfStream;
             }
         }
 
-        private static void UpdateOrderState(ResolvedEvent @event, OrdersDbContext context)
+        public void SubscribeToFutureEvents()
+        {
+            var thread = new Thread(() =>
+            {
+                eventStoreConnection.SubscribeToStreamAsync(streamName, true,
+                        (sub, evt) =>
+                        {
+                            UpdateOrderState(evt, context);
+                        })
+                    .Wait();
+            });
+
+            thread.Start();
+        }
+
+        private void UpdateOrderState(ResolvedEvent @event, OrdersDbContext context)
         {
             var evt = @event.Event;
 
@@ -78,7 +87,7 @@ namespace EsSample.Orders.Extentions
             context.SaveChanges();
         }
 
-        private static OrderCheckpoint GetOrCreateOrderWithCheckpoint(Guid orderId, OrdersDbContext context)
+        private OrderCheckpoint GetOrCreateOrderWithCheckpoint(Guid orderId, OrdersDbContext context)
         {
             var checkpoint = context.OrderCheckpoints
                 .Include(checkpoint => checkpoint.Order)
@@ -103,7 +112,5 @@ namespace EsSample.Orders.Extentions
 
             return checkpoint;
         }
-
     }
-
 }

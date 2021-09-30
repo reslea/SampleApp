@@ -19,6 +19,7 @@ using System.Net;
 using EventStore.ClientAPI.SystemData;
 using EsSample.Orders.Database.Entities;
 using EsSample.Orders.Extentions;
+using EsSample.Orders.OrderSync;
 
 namespace EsSample.Orders
 {
@@ -48,6 +49,7 @@ namespace EsSample.Orders
                 connection.ConnectAsync().Wait();
                 return connection;
             });
+            services.AddScoped<IOrderDbSyncronizer, OrderDbSyncronizer>();
 
             services.AddDbContext<OrdersDbContext>(options => options
                 .UseSqlite(@"Data Source=.\Orders.db"));

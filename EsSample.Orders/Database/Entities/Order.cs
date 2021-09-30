@@ -15,7 +15,7 @@ namespace EsSample.Orders.Database.Entities
 
         public int ProductCount { get; set; }
 
-        public bool IsCompleted { get; set; }
+        public bool IsPrepared { get; set; }
 
         public bool IsPaid { get; set; }
 
@@ -36,10 +36,10 @@ namespace EsSample.Orders.Database.Entities
                     ProductCount = order.Products.Count;
 
                     IsPaid = true;
-                    IsCompleted = false;
+                    IsPrepared = false;
                     break;
                 case "OrderPrepared":
-                    IsCompleted = true;
+                    IsPrepared = true;
                     break;
                 default: break;
             }
